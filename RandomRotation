@@ -1,0 +1,26 @@
+//The will rotate an object on its own axis
+//It will be useful creating onjects or props in background to make it more dynamic
+
+public class ObjectRotating : MonoBehaviour
+{
+    public float minRotationSpeed = 10f; // Minimum rotation speed
+    public float maxRotationSpeed = 20f; // Maximum rotation speed
+
+    private float rotationSpeed;
+    private Vector3 rotationDirection;
+
+    private void Start()
+    {
+        // Generate a random rotation speed within the specified range
+        rotationSpeed = Random.Range(minRotationSpeed, maxRotationSpeed);
+
+        // Generate a random rotation direction (forward or backward)
+        rotationDirection = Random.value < 0.5f ? Vector3.forward : -Vector3.forward;
+    }
+
+    private void Update()
+    {
+        // Rotate the object around its own axis with the random speed and direction
+        transform.Rotate(rotationDirection, rotationSpeed * Time.deltaTime);
+    }
+}
