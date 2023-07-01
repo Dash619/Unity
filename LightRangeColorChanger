@@ -1,0 +1,46 @@
+//The Following code is to use to change the color of light source when the player enters the light range
+//This can be used for situations like emergency exit or siren settings.
+
+public class LightColorChanger : MonoBehaviour
+{
+  
+    public Light lightSource; // Reference to the Light component
+    public GameObject player; // Reference to the player GameObject
+    public Color activeColor = Color.green; // Color when the player is within range
+    public Color inactiveColor = Color.red; // Color when the player is out of range
+
+    private bool isPlayerInRange; // Flag to track if the player is within range
+
+    private void Start()
+    {
+        if (lightSource == null)
+        {
+            lightSource = GetComponent<Light>(); // Assign the Light component if not assigned in the Inspector
+        }
+
+        // Set the initial color based on whether the player is in range or not
+        lightSource.color = isPlayerInRange ? activeColor : inactiveColor;
+
+        if (player == null)
+        {
+            player = GameObject.FindGameObjectWithTag("Player"); // Find the player GameObject if not assigned in the Inspector
+        }
+    }
+
+    private void Update()
+    {
+        if (player != null)
+        {
+            // Check if the player is within range based on the light's range and the player's distance to the light source
+            float playerDistance = Vector3.Distance(transform.position, player.transform.position);
+            bool isPlayerWithinRange = playerDistance <= lightSource.range;
+
+            // If the player's range status has changed, update the light's color accordingly
+            if (isPlayerInRange != isPlayerWithinRange)
+            {
+                isPlayerInRange = isPlayerWithinRange;
+                lightSource.color = isPlayerInRange ? activeColor : inactiveColor;
+            }
+        }
+    }
+}
