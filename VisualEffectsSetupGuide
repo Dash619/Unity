@@ -11,4 +11,4 @@ Glow Effect:
 Shader with Emission emission color (not black ) intensity > 0
 Post Processing Bloom Intesnity and threshold
 Render Pipleine Assert enable HDR
-Camera - enable post processing
+Camera - Enable post processing
