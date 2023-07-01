@@ -1,0 +1,21 @@
+How to play Video in Unity when press play:
+
+Step by Step Instructions:
+
+Step 1: In the Unity Editor, navigate to the Hierarchy window and select the GameObject where you want to play the video.
+
+Step 2: In the Inspector window, click on "Add Component" and search for "Video Player". Add the Video Player component to the selected GameObject.
+
+Step 3: In the Video Player component settings, click on the "Add Video Clip" button and select the video file you want to play. Ensure that the video file is compatible with Unity (e.g., MP4, WebM, Ogg).
+
+Step 4: Take note of the resolution and aspect ratio of the video clip. You will need this information in the next steps.
+
+Step 5: In the Project Explorer window, right-click and select "Create" → "Render Texture". Customize the size value of the Render Texture to match the resolution of the video clip from step 5.
+
+Step 6: In the Hierarchy window, select the GameObject where you want to display the video. Click on "Add Component" and search for "Raw Image". Add the Raw Image component to the selected GameObject.
+
+Step 7: In the Inspector window, find the "Texture" property of the Raw Image component. Drag and drop the Render Texture created in step 6 into the Texture property.
+
+Step 8: Ensure that the Raw Image component is set to stretch on all sides by adjusting the anchor presets and resetting the values to zero.
+
+Step 9: Now, when you press the Play button in the Unity Editor, the video will start playing automatically. If you want to change the video settings or behavior, you can modify the Video Player component properties, such as autoplay, looping, etc., in the Inspector window.
