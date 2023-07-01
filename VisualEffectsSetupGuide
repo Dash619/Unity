@@ -1,0 +1,14 @@
+Glitch Effect: 
+
+Use the following link to get the shader file and texture
+https://drive.google.com/drive/folders/1GcJpC6KdB9uerL75z4Obz6DStBsCtUFH
+Import the files into Unity
+Create a new material and assign the custom shader.
+Add the texture and customize as required.
+
+Glow Effect:
+
+Shader with Emission emission color (not black ) intensity > 0
+Post Processing Bloom Intesnity and threshold
+Render Pipleine Assert enable HDR
+Camera - enable post processing
