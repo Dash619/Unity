@@ -1,0 +1,1 @@
+When using 2D make sure that SCALING is done through the texture and to keep everything consistant 1 unit. Example : when we create a main player sprite in 300 X 300 pixels need to make sure that pixels per unit is selected as 300 aswell.
