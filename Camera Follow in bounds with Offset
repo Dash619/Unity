@@ -1,0 +1,32 @@
+using UnityEngine;
+
+public class CameraFollow : MonoBehaviour
+{
+    public Transform playerTransform; // Reference to the player's transform
+    public Vector3 offset; // Offset of the camera from the player
+    public float smoothSpeed = 0.125f; // How smoothly the camera catches up to its target
+
+    // Define your bounds for X and Z axes
+    public float minX;
+    public float maxX;
+    public float minZ;
+    public float maxZ;
+
+    void LateUpdate() // Using LateUpdate to ensure it runs after all Update methods
+    {
+        if (playerTransform != null)
+        {
+            Vector3 desiredPosition = playerTransform.position + offset;
+
+            // Clamping the camera position within the defined bounds for X and Z axes
+            desiredPosition.x = Mathf.Clamp(desiredPosition.x, minX, maxX);
+            desiredPosition.z = Mathf.Clamp(desiredPosition.z, minZ, maxZ);
+
+            // Calculate the new position with the offset for Y axis
+            desiredPosition.y = playerTransform.position.y + offset.y;
+
+            Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
+            transform.position = smoothedPosition;
+        }
+    }
+}
