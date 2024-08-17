@@ -1,0 +1,164 @@
+Unity Grid System
+======================================================================================================================================================================
+/*
+    GridSystem.cs
+
+    This script manages the overall grid system for the game. It handles the creation, 
+    positioning, and interactions of grid cells. The grid is defined by its width, 
+    height, and cell size. Key functionalities include converting between grid positions 
+    and world positions, generating grid objects, and creating debug visuals.
+
+    Main Features:
+    - Creates a 2D grid based on specified width, height, and cell size.
+    - Converts between grid positions (x, z) and world positions (Vector3).
+    - Stores and manages GridObject instances for each cell.
+    - Provides methods for accessing and manipulating grid objects.
+    - Optionally creates debug visuals to display the grid layout in the game world.
+
+    Usage:
+    Use this script as the backbone of a grid-based game system, where game objects 
+    or elements are positioned based on grid coordinates. Extend this script to add 
+    custom behavior for various grid-based mechanics (e.g., movement, placement).
+*/
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class GridSystem : MonoBehaviour
+{
+    private int width;
+    private int height;
+    private float cellSize;
+    private GridObject[,] gridObjectArray; 
+    public GridSystem(int width, int height, float cellSize)
+    {
+        this.width = width;
+        this.height = height;
+        this.cellSize = cellSize;
+
+        gridObjectArray = new GridObject[width, height];
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int z = 0; z < height; z++)
+            {
+                GridPosition gridPosition = new GridPosition(x, z);
+                gridObjectArray[x, z] = new GridObject(this, gridPosition);
+            }
+        }
+    }
+    public Vector3 GetWorldPosition(GridPosition gridPosition)
+    {
+        return new Vector3(gridPosition.x, 0, gridPosition.z) * cellSize;
+    }
+
+    public GridPosition GetGridPosition(Vector3 worldPosition)
+    {
+        return new GridPosition(
+            Mathf.RoundToInt(worldPosition.x/cellSize),
+            Mathf.RoundToInt(worldPosition.z/cellSize)            
+            );
+    }
+    
+    public void CreateDebugObjects(Transform debugPrefab)
+    {
+        for (int x = 0; x < width; x++)
+        {
+            for (int z = 0; z < height; z++)
+            {
+                GridPosition gridPosition = new GridPosition(x, z);
+                Transform debugTransform = GameObject.Instantiate(debugPrefab, GetWorldPosition(gridPosition), Quaternion.identity);
+                GridDebugObject gridDebugObject = debugTransform.GetComponent<GridDebugObject>();
+                gridDebugObject.SetGridObject(GetGridObject(gridPosition));
+            }
+        }
+    }
+
+    public GridObject GetGridObject(GridPosition gridPosition)
+    {
+        return gridObjectArray[gridPosition.x, gridPosition.z];
+    }
+    
+
+    
+}
+======================================================================================================================================================================
+
+/*
+    GridObject.cs
+
+    This script represents individual cells within the grid system. Each GridObject 
+    holds its grid position (x, z) and a reference to the overall GridSystem. The class 
+    can be extended to store additional data or behaviors specific to each grid cell, 
+    such as items, units, or special properties.
+
+    Main Features:
+    - Holds a reference to the GridSystem it belongs to.
+    - Stores the grid position (x, z) for easy identification within the grid.
+    - Provides a ToString() method for easy debugging and display of the grid position.
+
+    Usage:
+    Use this script as the data container for each cell in your grid. Extend it to 
+    store more complex information, such as which unit or object occupies the cell, 
+    or to handle cell-specific behaviors.
+*/
+
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class GridObject 
+{
+    private GridSystem gridSystem;
+    private GridPosition gridPosition;
+
+    public GridObject(GridSystem gridSystem, GridPosition gridPosition)
+    {
+        this.gridSystem = gridSystem; 
+        this.gridPosition = gridPosition;
+    }
+
+    public override string ToString()
+    {
+        return gridPosition.ToString();
+    }
+}
+
+======================================================================================================================================================================
+/*
+    GridPosition.cs
+
+    This script is a simple data structure that represents a position within the grid 
+    using x and z coordinates (like rows and columns in a grid). It is used by the 
+    GridSystem and GridObject scripts to keep track of where objects are positioned 
+    on the grid.
+
+    Main Features:
+    - Stores x and z coordinates representing grid positions.
+    - Provides constructors for easy creation of grid positions.
+    - Includes a ToString() method for displaying grid coordinates in a readable format.
+
+    Usage:
+    This struct serves as the coordinate system for your grid. Use it to represent 
+    the positions of objects or cells within the grid and to perform calculations 
+    related to grid positioning.
+*/
+
+
+public struct GridPosition
+{
+    public int x;
+    public int z;
+
+    public GridPosition(int x, int z)
+    {
+        this.x = x;
+        this.z = z; 
+    }
+
+    public override string ToString()
+    {
+        return $"x: {x}; z: {z}";
+    }
+}
