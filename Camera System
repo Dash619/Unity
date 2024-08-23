@@ -1,0 +1,117 @@
+/*
+    CameraSystem.cs
+
+    This script manages a camera system in Unity that allows smooth movement, rotation, 
+    and zoom functionality. The camera is controlled by player inputs and uses 
+    Cinemachine for smooth transitions and control.
+
+    Main Features:
+    - Handles camera movement using WASD keys or arrow keys.
+    - Controls camera rotation based on Q/E keys.
+    - Provides smooth zoom functionality controlled by the mouse scroll wheel.
+    - Uses Cinemachine for smooth camera transitions and dynamic behavior.
+    - Includes adjustable parameters for movement speed, rotation speed, and zoom levels.
+
+    Usage:
+    Attach this script to a GameObject with a CinemachineVirtualCamera component. 
+    Adjust the settings via the Unity Inspector or directly within the script to 
+    achieve the desired camera behavior. Ideal for top-down or third-person camera 
+    setups.
+*/
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using Cinemachine;
+
+public class CameraSystem : MonoBehaviour
+{
+    // Minimum and maximum zoom values for the camera
+    private const float MIN_ZOOM = 2f;
+    private const float MAX_ZOOM = 12f;
+
+    // Reference to the Cinemachine Virtual Camera
+    [SerializeField] private CinemachineVirtualCamera virtualCamera;
+
+    // Internal variables for camera control
+    private CinemachineTransposer transposer;
+    private Vector3 followOffset;
+
+    // Initialization
+    private void Start()
+    {
+        // Get the Cinemachine Transposer component to control the camera's follow behavior
+        transposer = virtualCamera.GetCinemachineComponent<CinemachineTransposer>();
+        followOffset = transposer.m_FollowOffset; // Store the initial follow offset
+    }
+
+    // Update is called once per frame
+    private void Update()
+    {
+        HandleMovement(); // Handles movement based on input
+        HandleRotation(); // Handles rotation based on input
+        HandleZoom();     // Handles zoom based on input
+    }
+
+    // Handles camera movement using WASD or arrow keys
+    private void HandleMovement()
+    {
+        Vector3 inputDirection = Vector3.zero;
+
+        // Check for movement input
+        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
+        {
+            inputDirection.z = 1f; // Move forward
+        }
+        if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
+        {
+            inputDirection.z = -1f; // Move backward
+        }
+        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+        {
+            inputDirection.x = -1f; // Move left
+        }
+        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+        {
+            inputDirection.x = 1f; // Move right
+        }
+
+        // Apply movement based on the input direction and speed
+        float moveSpeed = 10f;
+        Vector3 moveVector = (transform.forward * inputDirection.z + transform.right * inputDirection.x) * moveSpeed * Time.deltaTime;
+        transform.position += moveVector; // Update the camera's position
+    }
+
+    // Handles camera rotation using Q/E keys
+    private void HandleRotation()
+    {
+        Vector3 rotationDirection = Vector3.zero;
+
+        // Check for rotation input
+        if (Input.GetKey(KeyCode.Q))
+        {
+            rotationDirection.y = 1f; // Rotate left
+        }
+        if (Input.GetKey(KeyCode.E))
+        {
+            rotationDirection.y = -1f; // Rotate right
+        }
+
+        // Apply rotation based on the input direction and speed
+        float rotationSpeed = 100f;
+        transform.eulerAngles += rotationDirection * rotationSpeed * Time.deltaTime;
+    }
+
+    // Handles zooming using the mouse scroll wheel
+    private void HandleZoom()
+    {
+        float zoomSpeed = 5f;
+        float zoomAmount = Input.mouseScrollDelta.y * -1f; // Invert the scroll direction for intuitive zoom control
+
+        // Adjust the y-axis offset for zooming
+        followOffset.y = Mathf.Clamp(followOffset.y + zoomAmount, MIN_ZOOM, MAX_ZOOM);
+
+        // Smoothly transition the zoom level
+        transposer.m_FollowOffset = Vector3.Lerp(transposer.m_FollowOffset, followOffset, Time.deltaTime * zoomSpeed);
+    }
+}
